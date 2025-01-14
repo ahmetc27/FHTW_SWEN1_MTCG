@@ -19,41 +19,40 @@ public class Server
         while(true)
         {
             var client = Listener.AcceptTcpClient();
-            // ToDo Add Thread
             Thread clientThread = new Thread(() =>
             {
-                Console.WriteLine("Thread is running...");
+                //Console.WriteLine("Thread is running...");
+                Request request = new Request(client);
+                Console.WriteLine(request.Method);
+                Console.WriteLine(request.Path);
+                Console.WriteLine(request.Version);
+                foreach (var header in request.Headers)
+                {
+                    Console.WriteLine($"{header.Key}: {header.Value}");
+                }
+                Console.WriteLine(request.Body);
+            
+                Response response = new Response(client);
+                if (string.IsNullOrEmpty(request.Method) || 
+                    !new[] { "GET", "POST", "PUT", "DELETE" }.Contains(request.Method))
+                {
+                    response.BadRequest();
+                    return;
+                }
+                if (string.IsNullOrEmpty(request.Path) || !request.Path.StartsWith("/"))
+                {
+                    response.BadRequest();
+                    return;
+                }
+
+                if (request.Version != "HTTP/1.1")
+                {
+                    response.BadRequest();
+                    return;
+                }
+                response.Ok();
             });
             clientThread.Start();
-            Request request = new Request(client);
-            Console.WriteLine(request.Method);
-            Console.WriteLine(request.Path);
-            Console.WriteLine(request.Version);
-            foreach (var header in request.Headers)
-            {
-                Console.WriteLine($"{header.Key}: {header.Value}");
-            }
-            Console.WriteLine(request.Body);
-            
-            Response response = new Response(client);
-            if (string.IsNullOrEmpty(request.Method) || 
-                !new[] { "GET", "POST", "PUT", "DELETE" }.Contains(request.Method))
-            {
-                response.BadRequest();
-                return;
-            }
-            if (string.IsNullOrEmpty(request.Path) || !request.Path.StartsWith("/"))
-            {
-                response.BadRequest();
-                return;
-            }
-
-            if (request.Version != "HTTP/1.1")
-            {
-                response.BadRequest();
-                return;
-            }
-            response.Ok();
         }
     }
 }
