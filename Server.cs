@@ -36,7 +36,6 @@ public class Server
             Console.WriteLine(request.Body);
             
             Response response = new Response(client);
-            
             if (string.IsNullOrEmpty(request.Method) || 
                 !new[] { "GET", "POST", "PUT", "DELETE" }.Contains(request.Method))
             {
@@ -54,6 +53,7 @@ public class Server
                 response.BadRequest();
                 return;
             }
+            response.Ok();
         }
     }
 }

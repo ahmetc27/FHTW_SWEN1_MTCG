@@ -8,7 +8,7 @@ public class Response
     public Response(TcpClient tcpClient)
     {
         Writer = new StreamWriter(tcpClient.GetStream());
-        Writer.AutoFlush = true; // buffer is cleared immediately after each write operation
+        // Writer.AutoFlush = true; // buffer is cleared immediately after each write operation
     }
 
     public void Ok()
