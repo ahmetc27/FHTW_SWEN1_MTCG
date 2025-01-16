@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  db:
+    build: .
+    container_name: mtcg
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"  # Host port : Container port
+    volumes:
+      - ./CreateDatabase.sql:/docker-entrypoint-initdb.d/init.sql
+volumes:
+  db_data:
